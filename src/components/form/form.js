@@ -4,6 +4,15 @@ import PopupBtn from "../popupBtn";
 import PopupText from "../popupText";
 import FormComponent from '../formComponents';
 
+import {
+    addClass,
+    resetValue,
+    removeClass,
+    toggleClass,
+    itemValidate,
+    onMirageText,
+    removeClassErrors
+} from '../helpers'
 
 import '../CSSVariables/variables.css';
 import './form.css';
@@ -18,6 +27,7 @@ export default class Form extends Component {
         }
     }
 
+
     onShowModal = () => {
         setTimeout(() => {
             this.setState( ({ show }) => {
@@ -28,17 +38,91 @@ export default class Form extends Component {
             }, 1500)
     };
 
-    // onHideModal = () => {
-    //     setTimeout(() => {
-    //         this.setState( ({ show }) => {
-    //             return {
-    //                 show: !show
-    //             }
-    //         })
-    //     }, 1500)
-    // };
+    addClass = (el, className) => {
+        el.classList.add(className);
+    };
+
+    removeClass = (el, className) => {
+        el.classList.remove(className);
+    };
+
+    toggleClass = (el, className) => {
+        el.classList.toggle(className);
+    };
+
+    itemValidate = (item, itemFormat, itemFocus, placeholderValue, className = 'error-box-form') => {
+
+        if (item.value.match(itemFormat)) {
+            itemFocus.focus();
+            return true
+        }
+
+        itemFocus.focus();
+        item.placeholder = placeholderValue;
+        item.classList.add(className);
+        return false;
+    };
+
+    removeClassErrors = (className, ...elements) => {
+        const el = [...elements];
+        el.forEach(item => this.removeClass(item, className));
+    };
+
+    resetValue = elements => elements.forEach(item => item.value = '');
+
+    submitForm = () => event => {
+        event.preventDefault();
+
+        const name = document.getElementById('name');
+        const phone = document.getElementById('phone');
+        const email = document.getElementById('email');
+        const company = document.getElementById('company');
+
+        const faidText = document.getElementById('popup-text-container');
+        const formMain = document.getElementById('form-main');
+
+        const close = document.getElementById('close');
+
+        const nameFormat = /^[a-zA-Zа-яА-Я ]{2,30}$/;
+        const phoneFormat = /^\+?([3-8]{2})\)?([0-9]{10})$/;
+        const mailFormat = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+        const nameChecked = this.itemValidate(name, nameFormat, document.contactForm.name, 'Невірний формат даних');
+        const phoneChecked = this.itemValidate(phone, phoneFormat, document.contactForm.phone, 'Невірний формат номеру');
+        const emailChecked = this.itemValidate(email, mailFormat, document.contactForm.email, 'Невірний формат пошти');
+
+        const elements = [name, phone, email, company];
+
+        if (nameChecked && phoneChecked && emailChecked) {
+            this.onMirageText(faidText, 'popup-up', 750, 2000);
+            this.removeClassErrors('error-box-form', name, phone, email, company);
+            setTimeout(() => this.toggleClass(formMain, 'show-modal', 500));
+            this.resetValue(elements);
+        }
+
+    };
+
+    onMirageText = (el, className, addTime, removeTime) => {
+        setTimeout(() => this.addClass(el, className), addTime);
+        setTimeout(() => this.removeClass(el, className), removeTime);
+    };
+
+    onHideModal = () => {
+        const faidText = document.getElementById('popup-text-container');
+        this.submitForm();
+        this.onMirageText(faidText, 'popup-up', 750, 2000);
+        setTimeout(() => {
+            this.setState( ({ show }) => {
+                return {
+                    show: !show
+                }
+            })
+        }, 1500)
+    };
 
     render() {
+
+
 
         const { show } = this.state;
         let formContainerClassNames = 'form-main';
@@ -126,7 +210,7 @@ export default class Form extends Component {
                                         id='button-blue'
                                         className='button-blue'
                                         value='Получить цену'
-                                        onClick={ this.onShowModal }
+                                        onClick={ this.onHideModal }
                                     />
                                     <div className='ease' />
                                 </div>
