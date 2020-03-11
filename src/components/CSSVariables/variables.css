@@ -19,4 +19,11 @@
     --product-btn-color: #1a390c;
     --product-btn-bgc: #0abe67;
     --product-btn-border: 1px solid #0abe67;
+
+
+
+    /*settings_data.json*/
+
+    --color_button_background: #0abe67;
+    --color_button_text: #1a390c;
 }
