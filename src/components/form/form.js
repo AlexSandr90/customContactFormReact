@@ -2,9 +2,7 @@ import React, {Fragment, Component} from "react";
 
 import PopupText from "../popupText";
 import PopupBtn from "../popupBtn";
-import FormComponent from '../formComponents';
 import FormErrors from "../formErrors";
-import Helpers from "../helpers";
 
 import '../CSSVariables/variables.css';
 import './form.css';
@@ -16,6 +14,7 @@ export default class Form extends Component {
         super(props);
         this.state = {
             show: false,
+            showMirageText: false,
             name: '',
             phone: '',
             email: '',
@@ -68,18 +67,22 @@ export default class Form extends Component {
         const phoneFormat = /^\+?([3-8]{2})\)?([0-9]{10})$/;
         const mailFormat = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
-        if (fieldName === 'name') {
-            nameValid = value.match(nameFormat);
-            fieldValidationErrors.name = nameValid ? '' : ' is invalid';
-        } else if (fieldName === 'phone') {
 
-            phoneValid = value.match(phoneFormat);
-            fieldValidationErrors.phone = phoneValid ? '' : ' is invalid';
-        } else if (fieldName === 'email') {
-            // eslint-disable-next-line no-useless-escape
-            emailValid = value.match(mailFormat);
-            fieldValidationErrors = emailValid ? '' : ' is invalid';
-        } else {
+        switch (fieldName) {
+            case 'name':
+                nameValid = value.match(nameFormat);
+                fieldValidationErrors.name = nameValid ? '' : ' is invalid';
+                break;
+            case 'phone':
+                phoneValid = value.match(phoneFormat);
+                fieldValidationErrors.phone = phoneValid ? '' : ' is invalid';
+                break;
+            case 'email':
+                emailValid = value.match(mailFormat);
+                fieldValidationErrors = emailValid ? '' : ' is invalid';
+                break;
+            default:
+                break;
         }
 
         this.setState({
@@ -91,45 +94,43 @@ export default class Form extends Component {
             this.validateForm);
     };
 
+    onMirageText = () => {
+        setTimeout(() => {
+            this.setState(({showMirageText}) => {
+                return {
+                    showMirageText: true
+                }
+            })
+        }, 750);
 
+        setTimeout(() => {
+            this.setState(({showMirageText}) => {
+                return {
+                    showMirageText: false
+                }
+            })
+        }, 2000)
+    };
 
     onHideModal = () => {
-        const faidText = document.getElementById('popup-text-container');
         const name = document.getElementById('name');
         const phone = document.getElementById('phone');
         const email = document.getElementById('email');
         const company = document.getElementById('company');
-        // this.submitForm('click');
-        // this.onMirageText(faidText, 'popup-up', 750, 2000);
-
 
         const elems = [name, phone, email, company];
 
-        setTimeout(() => {
-            this.onMirageText(this.faidText, 'popup-up', 750, 2000);
-            this.setState(({show}) => {
-                return {
-                    show: !show
-                }
-            })
-        }, 1500);
+        if (this.validateForm) {
+            setTimeout(() => {
+                this.onMirageText();
+                this.setState(({show}) => {
+                    return {
+                        show: !show
+                    }
+                })
+            }, 1500);
+        }
 
-        // if (this.formValidate) {
-        //     this.onMirageText(this.faidText, 'popup-up', 750, 2000);
-        //     this.removeClassErrors('error-box-form', name, phone, email, company);
-        //     setTimeout(() => {
-        //         this.setState(({show}) => {
-        //             return {
-        //                 show: !show
-        //             }
-        //         })
-        //     }, 1500);
-        //     console.log(this.formValidate());
-        //
-        //     this.resetValue(elems);
-        // }
-        //
-        // console.log(this.formValidate());
     };
 
     render() {
@@ -142,12 +143,16 @@ export default class Form extends Component {
             company,
             comment,
             formValid,
-            formErrors
+            formErrors,
+            showMirageText
         } = this.state;
 
         let formContainerClassNames = 'form-main';
+        let popupMirageText = 'popup-text-container';
+
 
         show ? formContainerClassNames += ' show-modal' : formContainerClassNames = 'form-main';
+        showMirageText ? popupMirageText += ' popup-up' : popupMirageText = 'popup-text-container';
 
         return (
             <Fragment>
@@ -262,7 +267,14 @@ export default class Form extends Component {
                     </div>
                 </div>
 
-                <PopupText text='Наши специалисты свяжутся с Вами в ближайшее время'/>
+                <div className={popupMirageText}>
+                    <div id="popup-text" className="popup-text">
+                        <p>
+                            Наши специалисты свяжутся с Вами в ближайшее время
+                        </p>
+                    </div>
+                </div>
+
             </Fragment>
         )
     }
