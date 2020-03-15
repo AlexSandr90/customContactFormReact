@@ -13,8 +13,6 @@ export default class Form extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            show: false,
-            showMirageText: false,
             name: '',
             phone: '',
             email: '',
@@ -25,10 +23,16 @@ export default class Form extends Component {
                 phone: '',
                 email: '',
             },
+            show: false,
+            nameId: false,
+            phoneId: false,
+            formValid: false,
             nameValid: false,
             phoneValid: false,
             emailValid: false,
-            formValid: false
+            showMirageText: false,
+            nameIdPlaceholder: false,
+            phoneIdPlaceholder: false
         };
     }
 
@@ -42,6 +46,66 @@ export default class Form extends Component {
         }, 1500)
     };
 
+
+
+    validateField = (fieldName, value) => {
+        let {nameValid, phoneValid, emailValid, formErrors, name} = this.state;
+        // let fieldValidationErrors = this.state.formErrors;
+        // let nameValid = this.state.nameValid;
+        // let phoneValid = this.state.phoneValid;
+        // let emailValid = this.state.emailValid;
+
+        const nameFormat = '/^[a-zA-Zа-яА-Я ]{2,30}$/';
+        const phoneFormat = /^\+?([3-8]{2})\)?([0-9]{10})$/;
+        const mailFormat = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+
+        switch (fieldName) {
+            case 'name':
+                // nameValid = value.match(nameFormat);
+                console.log(value.match(nameFormat));
+                // formErrors.name =
+                nameValid ?
+                    this.setState(({nameId, nameIdPlaceholder}) => {
+                        return {
+                            nameId: !nameId,
+                            nameIdPlaceholder: !nameIdPlaceholder
+                        }
+                    }) :
+                    this.setState(({nameId, nameIdPlaceholder}) => {
+                        return {
+                            nameId: nameId,
+                            nameIdPlaceholder: nameIdPlaceholder
+                        }
+                    });
+                console.log(name);
+                break;
+            case 'phone':
+                phoneValid = value.match(phoneFormat);
+                this.setState(({phoneId, phoneIdPlaceholder}) => {
+                    return {
+                        phoneId: !phoneId,
+                        phoneIdPlaceholder: !phoneIdPlaceholder
+                    }
+                });
+                break;
+            case 'email':
+                emailValid = value.match(mailFormat);
+                // formErrors.email = emailValid ? '' : ' is invalid';
+                break;
+            default:
+                break;
+        }
+
+        this.setState({
+            formErrors: formErrors,
+            nameValid: nameValid,
+            phoneValid: phoneValid,
+            emailValid: emailValid
+        },
+            this.validateForm);
+    };
+
     handleUserInput = e => {
         const name = e.target.name;
         const value = e.target.value;
@@ -52,46 +116,10 @@ export default class Form extends Component {
     };
 
     validateForm = () => {
+        const { nameValid, phoneValid, emailValid } = this.state;
         this.setState({
-            formValid: this.state.nameValid && this.state.phoneValid && this.state.emailValid
+            formValid: nameValid && phoneValid && emailValid
         })
-    };
-
-    validateField = (fieldName, value) => {
-        let fieldValidationErrors = this.state.formErrors;
-        let nameValid = this.state.nameValid;
-        let phoneValid = this.state.phoneValid;
-        let emailValid = this.state.emailValid;
-
-        const nameFormat = /^[a-zA-Zа-яА-Я ]{2,30}$/;
-        const phoneFormat = /^\+?([3-8]{2})\)?([0-9]{10})$/;
-        const mailFormat = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-
-
-        switch (fieldName) {
-            case 'name':
-                nameValid = value.match(nameFormat);
-                fieldValidationErrors.name = nameValid ? '' : ' is invalid';
-                break;
-            case 'phone':
-                phoneValid = value.match(phoneFormat);
-                fieldValidationErrors.phone = phoneValid ? '' : ' is invalid';
-                break;
-            case 'email':
-                emailValid = value.match(mailFormat);
-                fieldValidationErrors = emailValid ? '' : ' is invalid';
-                break;
-            default:
-                break;
-        }
-
-        this.setState({
-            formErrors: fieldValidationErrors,
-            nameValid: nameValid,
-            phoneValid: phoneValid,
-            emailValid: emailValid
-        },
-            this.validateForm);
     };
 
     onMirageText = () => {
@@ -140,19 +168,34 @@ export default class Form extends Component {
             name,
             phone,
             email,
+            nameId,
             company,
             comment,
+            phoneId,
             formValid,
             formErrors,
-            showMirageText
+            showMirageText,
+            nameIdPlaceholder,
+            phoneIdPlaceholder
         } = this.state;
 
         let formContainerClassNames = 'form-main';
         let popupMirageText = 'popup-text-container';
-
+        let nameValidateClass = 'name';
+        let nameValidateClassPlaceholder = 'validate[required,custom[onlyLetter],length[0,100]] feedback-input';
+        let phoneValidateClass = 'phone';
+        let phoneValidateClassPlaceholder = 'validate[required,custom[phone]] feedback-input';
 
         show ? formContainerClassNames += ' show-modal' : formContainerClassNames = 'form-main';
         showMirageText ? popupMirageText += ' popup-up' : popupMirageText = 'popup-text-container';
+        nameId ? nameValidateClass += ' border' : nameValidateClass = 'name';
+        // nameId ?
+        //     (nameValidateClass += ' border') && (nameValidateClassPlaceholder += ' error-box-form') :
+        //     (nameValidateClass = 'name') && (nameValidateClassPlaceholder = 'validate[required,custom[onlyLetter],length[0,100]] feedback-input');
+        nameIdPlaceholder ? nameValidateClassPlaceholder += ' error-box-form' : nameValidateClassPlaceholder = 'validate[required,custom[onlyLetter],length[0,100]] feedback-input';
+        phoneId ? phoneValidateClass += ' border' : phoneValidateClass = 'phone';
+        phoneIdPlaceholder ? phoneValidateClassPlaceholder += ' error-box-form' : phoneValidateClassPlaceholder = 'validate[required,custom[phone]] feedback-input';
+
 
         return (
             <Fragment>
@@ -176,14 +219,14 @@ export default class Form extends Component {
                                     <FormErrors formErrors={formErrors} />
                                 </div>
 
-                                <p className='name'>
+                                <p className={nameValidateClass}>
                                     <label htmlFor='name'>
                                         <i className='fas fa-user fa-2x' />
                                     </label>
                                     <input
                                         type='text'
                                         name='name'
-                                        className='validate[required,custom[onlyLetter],length[0,100]] feedback-input'
+                                        className={nameValidateClassPlaceholder}
                                         placeholder='ФИО*'
                                         id='name'
                                         value={name}
@@ -192,14 +235,14 @@ export default class Form extends Component {
                                     />
                                 </p>
 
-                                <p className='phone'>
+                                <p className={phoneValidateClass}>
                                     <label htmlFor='phone'>
                                         <i className='fas fa-phone-alt fa-2x' />
                                     </label>
                                     <input
                                         type='text'
                                         name='phone'
-                                        className='validate[required,custom[phone]] feedback-input'
+                                        className={phoneValidateClassPlaceholder}
                                         placeholder='Телефон (+380 хххх хх хх)*'
                                         id='phone'
                                         value={phone}
@@ -253,7 +296,7 @@ export default class Form extends Component {
 
                                 <div className='submit'>
                                     <input
-                                        type='button'
+                                        type='submit'
                                         id='button-blue'
                                         className='button-blue'
                                         value='Получить цену'
