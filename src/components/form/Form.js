@@ -6,35 +6,38 @@ import FormErrors from "../formErrors";
 
 import '../CSSVariables/variables.css';
 import './form.css';
-
+import ValidateMessage from "../validateMessage";
+import {phone} from "../JSVariables";
 
 export default class Form extends Component {
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            name: '',
-            phone: '',
-            email: '',
-            company: '',
-            comment: '',
-            formErrors: {
-                name: '',
-                phone: '',
-                email: '',
-            },
-            show: false,
-            nameId: false,
-            phoneId: false,
-            formValid: false,
-            nameValid: false,
-            phoneValid: false,
-            emailValid: false,
-            showMirageText: false,
-            nameIdPlaceholder: false,
-            phoneIdPlaceholder: false
-        };
-    }
+    // constructor(props) {
+    //     super(props);
+    //     this.state = {
+
+    //     };
+    // }
+
+    state = {
+        phone: '',
+        email: '',
+        company: '',
+        comment: '',
+        username: '',
+        errorMsg: {},
+        formValid: false,
+        emailValid: false,
+        phoneValid: false,
+        usernameValid: false,
+
+
+        show: false,
+        nameId: false,
+        phoneId: false,
+        showMirageText: false,
+        nameIdPlaceholder: false,
+        phoneIdPlaceholder: false
+    };
 
     onShowModal = () => {
         setTimeout(() => {
@@ -47,24 +50,100 @@ export default class Form extends Component {
     };
 
 
+    validateForm = () => {
+        const {
+            emailValid,
+            phoneValid,
+            usernameValid
+        } = this.state;
+        this.setState({
+            formValid: emailValid && phoneValid && usernameValid
+        })
+    };
+
+    validateUserName = () => {
+        const { username } = this.state;
+        let usernameValid = true;
+        let errorMsg = {...this.state.errorMsg};
+        const usernamePattern = /^[a-zA-Zа-яА-Я ]{3,30}$/;
+
+        if (username.length < 3 && username.length > 20) {
+            usernameValid = false;
+            errorMsg.username = 'Must be at lest 3 to 20 characters long'
+        } else if (!usernamePattern.test(username)) {
+            usernameValid = false;
+            errorMsg.username = 'Invalid name format'
+        }
+
+        this.setState({usernameValid, errorMsg}, this.validateForm)
+    };
+
+    updateUserName = username => {
+        this.setState({username}, this.validateUserName);
+    };
+
+    validateEmail = () => {
+        const { email } = this.state;
+        let emailValid = true;
+        let errorMsg = {...this.state.errorMsg};
+        const emailPattern = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+        if (!emailPattern.test(email)) {
+            emailValid = false;
+            errorMsg.email = 'Invalid email format'
+        }
+
+        this.setState({emailValid, errorMsg}, this.validateForm)
+    };
+
+    updateEmail = email => {
+        this.setState({email}, this.validateEmail)
+    };
+
+    validatePhoneNumber = () => {
+        const { phone } = this.state;
+        let phoneValid = true;
+        let errorMsg = {...this.state.errorMsg};
+        const phonePattern = /^\+?([3-8]{2})\)?([0-9]{10})$/;
+
+        if (!phonePattern.test(phone)) {
+            phoneValid = false;
+            errorMsg.phone = 'Invalid phone format';
+        }
+
+
+        this.setState({phoneValid, errorMsg}, this.validateForm)
+    };
+
+    updatePhoneNumber = phone => {
+        this.setState({phone}, this.validatePhoneNumber)
+    };
+
+    updateCompanyName = company => {
+        this.setState({company})
+    };
+
+    updateComment = comment => {
+        this.setState({comment})
+    };
+
 
     validateField = (fieldName, value) => {
-        let {nameValid, phoneValid, emailValid, formErrors, name} = this.state;
-        // let fieldValidationErrors = this.state.formErrors;
-        // let nameValid = this.state.nameValid;
-        // let phoneValid = this.state.phoneValid;
-        // let emailValid = this.state.emailValid;
-
-        const nameFormat = '/^[a-zA-Zа-яА-Я ]{2,30}$/';
+        const {
+            name,
+            nameValid,
+            phoneValid,
+            emailValid,
+            formErrors
+        } = this.state;
+        const nameFormat = /^[a-zA-Zа-яА-Я ]{2,30}$/;
         const phoneFormat = /^\+?([3-8]{2})\)?([0-9]{10})$/;
         const mailFormat = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
 
         switch (fieldName) {
             case 'name':
-                // nameValid = value.match(nameFormat);
                 console.log(value.match(nameFormat));
-                // formErrors.name =
                 nameValid ?
                     this.setState(({nameId, nameIdPlaceholder}) => {
                         return {
@@ -81,7 +160,7 @@ export default class Form extends Component {
                 console.log(name);
                 break;
             case 'phone':
-                phoneValid = value.match(phoneFormat);
+                this.phoneValid = value.match(phoneFormat);
                 this.setState(({phoneId, phoneIdPlaceholder}) => {
                     return {
                         phoneId: !phoneId,
@@ -90,8 +169,7 @@ export default class Form extends Component {
                 });
                 break;
             case 'email':
-                emailValid = value.match(mailFormat);
-                // formErrors.email = emailValid ? '' : ' is invalid';
+                this.emailValid = value.match(mailFormat);
                 break;
             default:
                 break;
@@ -113,13 +191,6 @@ export default class Form extends Component {
                 [name]: value
             },
             () => { this.validateField(name, value) });
-    };
-
-    validateForm = () => {
-        const { nameValid, phoneValid, emailValid } = this.state;
-        this.setState({
-            formValid: nameValid && phoneValid && emailValid
-        })
     };
 
     onMirageText = () => {
@@ -164,16 +235,20 @@ export default class Form extends Component {
     render() {
 
         const {
-            show,
-            name,
-            phone,
             email,
-            nameId,
+            phone,
             company,
             comment,
-            phoneId,
+            username,
+            errorMsg,
             formValid,
-            formErrors,
+            phoneValid,
+            emailValid,
+            usernameValid,
+
+            show,
+            nameId,
+            phoneId,
             showMirageText,
             nameIdPlaceholder,
             phoneIdPlaceholder
@@ -189,9 +264,9 @@ export default class Form extends Component {
         show ? formContainerClassNames += ' show-modal' : formContainerClassNames = 'form-main';
         showMirageText ? popupMirageText += ' popup-up' : popupMirageText = 'popup-text-container';
         nameId ? nameValidateClass += ' border' : nameValidateClass = 'name';
-        // nameId ?
-        //     (nameValidateClass += ' border') && (nameValidateClassPlaceholder += ' error-box-form') :
-        //     (nameValidateClass = 'name') && (nameValidateClassPlaceholder = 'validate[required,custom[onlyLetter],length[0,100]] feedback-input');
+        nameId ?
+            (nameValidateClass += ' border') && (nameValidateClassPlaceholder += ' error-box-form') :
+            (nameValidateClass = 'name') && (nameValidateClassPlaceholder = 'validate[required,custom[onlyLetter],length[0,100]] feedback-input');
         nameIdPlaceholder ? nameValidateClassPlaceholder += ' error-box-form' : nameValidateClassPlaceholder = 'validate[required,custom[onlyLetter],length[0,100]] feedback-input';
         phoneId ? phoneValidateClass += ' border' : phoneValidateClass = 'phone';
         phoneIdPlaceholder ? phoneValidateClassPlaceholder += ' error-box-form' : phoneValidateClassPlaceholder = 'validate[required,custom[phone]] feedback-input';
@@ -215,22 +290,25 @@ export default class Form extends Component {
 
                             <form id='form' className='form' name='contactForm'>
 
-                                <div className='panel panel-default'>
-                                    <FormErrors formErrors={formErrors} />
-                                </div>
+                                {/*<div className='panel panel-default'>*/}
+                                {/*    <FormErrors formErrors={formErrors} />*/}
+                                {/*</div>*/}
 
                                 <p className={nameValidateClass}>
-                                    <label htmlFor='name'>
+                                    <label htmlFor='username'>
                                         <i className='fas fa-user fa-2x' />
                                     </label>
+                                    <ValidateMessage valid={usernameValid}
+                                                     message={errorMsg.username}
+                                    />
                                     <input
                                         type='text'
                                         name='name'
                                         className={nameValidateClassPlaceholder}
                                         placeholder='ФИО*'
-                                        id='name'
-                                        value={name}
-                                        onChange={this.handleUserInput}
+                                        id='username'
+                                        value={username}
+                                        onChange={e => this.updateUserName(e.target.value)}
                                         required
                                     />
                                 </p>
@@ -239,6 +317,9 @@ export default class Form extends Component {
                                     <label htmlFor='phone'>
                                         <i className='fas fa-phone-alt fa-2x' />
                                     </label>
+                                    <ValidateMessage valid={phoneValid}
+                                                     message={errorMsg.phone}
+                                    />
                                     <input
                                         type='text'
                                         name='phone'
@@ -246,7 +327,7 @@ export default class Form extends Component {
                                         placeholder='Телефон (+380 хххх хх хх)*'
                                         id='phone'
                                         value={phone}
-                                        onChange={this.handleUserInput}
+                                        onChange={e => this.updatePhoneNumber(e.target.value)}
                                         required
                                     />
                                 </p>
@@ -255,6 +336,9 @@ export default class Form extends Component {
                                     <label htmlFor='email'>
                                         <i className='fas fa-phone-alt fa-2x' />
                                     </label>
+                                    <ValidateMessage valid={emailValid}
+                                                     message={errorMsg.email}
+                                    />
                                     <input
                                         type='email'
                                         name='email'
@@ -262,7 +346,7 @@ export default class Form extends Component {
                                         placeholder='Электронная почта*'
                                         id='email'
                                         value={email}
-                                        onChange={this.handleUserInput}
+                                        onChange={e => this.updateEmail(e.target.value)}
                                         required
                                     />
                                 </p>
@@ -278,7 +362,7 @@ export default class Form extends Component {
                                         placeholder='Ваша компания'
                                         id='company'
                                         value={company}
-                                        onChange={this.handleUserInput}
+                                        onChange={e => this.updateCompanyName(e.target.value)}
                                     />
                                 </p>
 
@@ -290,7 +374,7 @@ export default class Form extends Component {
                                     id='text'
                                     placeholder='Комментарий'
                                     value={comment}
-                                    onChange={this.handleUserInput}
+                                    onChange={e => this.updateComment(e.target.value)}
                                 />
                                 </p>
 
