@@ -7,16 +7,8 @@ import FormErrors from "../formErrors";
 import '../CSSVariables/variables.css';
 import './form.css';
 import ValidateMessage from "../validateMessage";
-import {phone} from "../JSVariables";
 
 export default class Form extends Component {
-
-    // constructor(props) {
-    //     super(props);
-    //     this.state = {
-
-    //     };
-    // }
 
     state = {
         phone: '',
@@ -46,7 +38,7 @@ export default class Form extends Component {
                     show: !show
                 }
             })
-        }, 1500)
+        }, 200)
     };
 
 
@@ -90,7 +82,7 @@ export default class Form extends Component {
 
         if (!emailPattern.test(email)) {
             emailValid = false;
-            errorMsg.email = 'Invalid email format'
+            errorMsg.email = 'Email must be contain @'
         }
 
         this.setState({emailValid, errorMsg}, this.validateForm)
@@ -106,9 +98,9 @@ export default class Form extends Component {
         let errorMsg = {...this.state.errorMsg};
         const phonePattern = /^\+?([3-8]{2})\)?([0-9]{10})$/;
 
-        if (!phonePattern.test(phone)) {
+       if (!phonePattern.test(phone)) {
             phoneValid = false;
-            errorMsg.phone = 'Invalid phone format';
+            errorMsg.phone = 'Please, enter phone in format +380xxxxxxxxx and length at 13 characters';
         }
 
 
@@ -211,13 +203,7 @@ export default class Form extends Component {
         }, 2000)
     };
 
-    onHideModal = () => {
-        const name = document.getElementById('name');
-        const phone = document.getElementById('phone');
-        const email = document.getElementById('email');
-        const company = document.getElementById('company');
-
-        const elems = [name, phone, email, company];
+    onHideModalSubmit = () => {
 
         if (this.validateForm) {
             setTimeout(() => {
@@ -227,9 +213,17 @@ export default class Form extends Component {
                         show: !show
                     }
                 })
-            }, 1500);
+            }, 200);
         }
 
+    };
+
+    onHideModalClose = () => {
+        this.setState(({show}) => {
+            return {
+                show: !show
+            }
+        })
     };
 
     render() {
@@ -286,7 +280,7 @@ export default class Form extends Component {
 
                     <div id='form-main' className={formContainerClassNames}>
                         <div id='form-container' className='form-container'>
-                            <div id='close' className='close'/>
+                            <div id='close' className='close' onClick={this.onHideModalClose}/>
 
                             <form id='form' className='form' name='contactForm'>
 
@@ -384,7 +378,7 @@ export default class Form extends Component {
                                         id='button-blue'
                                         className='button-blue'
                                         value='Получить цену'
-                                        onClick={this.onHideModal}
+                                        onClick={this.onHideModalSubmit}
                                         disabled={ !formValid }
                                     />
                                     <div className='ease'/>
