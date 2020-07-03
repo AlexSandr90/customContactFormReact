@@ -1,6 +1,8 @@
 :root {
     --main-bg-color-form: #3498db;
+    --disabled-bg-color-form: rgba(31, 107, 126, 0.73);
     --main-color: #ffffff;
+    --disabled-btn-color: #3e3d3a;
     --main-border-color: #fbfbfb;
     --popup-bg-color: rgba(0, 0, 0, 0.5);
     --popup-bg-color-secondary: rgba(0, 0, 0, 0);

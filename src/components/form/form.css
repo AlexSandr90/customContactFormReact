@@ -46,10 +46,6 @@
 }
 
 .feedback-input:focus {
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    -ms-box-sizing: border-box;
-    box-sizing: border-box;
     background: var(--main-color);
     box-shadow: none;
     border: 0 solid var(--main-color);
@@ -78,7 +74,18 @@ textarea {
 
 input:hover, textarea:hover,
 input:focus, textarea:focus {
-    background-color: var(--main-color);
+    cursor: text;
+}
+
+.button-disabled {
+    font-family: var(--font-family-form);
+    border: 4px solid var(--main-border-color);
+    color: var(--main-color);
+    width: 100%;
+    font-size: 24px;
+    padding: 22px 0;
+    border-radius: 10px;
+    cursor: auto !important;
 }
 
 .button-blue {
@@ -101,6 +108,11 @@ input:focus, textarea:focus {
     background-color: var(--popup-bg-color-secondary);
     color: var(--secondary-color);
 }
+
+.submit-disabled {
+
+}
+
 .submit:hover {
     color: var(--secondary-color);
 }
@@ -124,22 +136,14 @@ input:focus, textarea:focus {
     color: var(--color-hover);
 }
 
-.meter-label {
-    /*color: var(--color-label);*/
-    color: var(--main-color);
-    cursor: pointer;
-    font-size: 1.2rem;
-    margin-right: 1rem;
+label {
+    max-width: 15px;
+    width: 100%;
 }
 
-.meter-select {
-    width: calc(60% - 80px);
-    color: var(--color-focused);
-    height: 40px;
-    border-radius: 5px;
-    font-size: 1.5rem;
-    outline: none;
-    cursor: pointer;
+label i {
+    max-width: 15px;
+    width: 100%;
 }
 
 .name,
@@ -154,7 +158,7 @@ input:focus, textarea:focus {
     border-radius: 10px;
     -webkit-border-radius: 10px;
     -moz-border-radius: 10px;
-    cursor: pointer;
+    cursor: text;
     margin-bottom: 30px;
     box-sizing: border-box;
 }
@@ -163,7 +167,7 @@ input:focus, textarea:focus {
 .phone:hover,
 .email:hover,
 .company:hover {
-    cursor: pointer;
+    cursor: text;
     box-sizing: border-box;
 }
 
@@ -178,14 +182,14 @@ input:focus, textarea:focus {
 .email i,
 .company i {
     padding-left: 5px;
-    cursor: pointer;
+    cursor: text;
 }
 
 .name i:hover,
 .phone i:hover,
 .email i:hover,
 .company i:hover {
-    cursor: pointer;
+    cursor: text;
 }
 
 .text {

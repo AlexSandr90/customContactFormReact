@@ -59,9 +59,9 @@ export default class Form extends Component {
         let errorMsg = {...this.state.errorMsg};
         const usernamePattern = /^[a-zA-Zа-яА-Я ]{3,30}$/;
 
-        if (username.length < 3 && username.length > 20) {
+        if (username.length < 3 && username.length > 30) {
             usernameValid = false;
-            errorMsg.username = 'Must be at lest 3 to 20 characters long'
+            errorMsg.username = 'Must be at lest 3 to 30 characters long'
         } else if (!usernamePattern.test(username)) {
             usernameValid = false;
             errorMsg.username = 'Invalid name format'
@@ -119,72 +119,6 @@ export default class Form extends Component {
         this.setState({comment})
     };
 
-
-    validateField = (fieldName, value) => {
-        const {
-            name,
-            nameValid,
-            phoneValid,
-            emailValid,
-            formErrors
-        } = this.state;
-        const nameFormat = /^[a-zA-Zа-яА-Я ]{2,30}$/;
-        const phoneFormat = /^\+?([3-8]{2})\)?([0-9]{10})$/;
-        const mailFormat = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-
-
-        switch (fieldName) {
-            case 'name':
-                console.log(value.match(nameFormat));
-                nameValid ?
-                    this.setState(({nameId, nameIdPlaceholder}) => {
-                        return {
-                            nameId: !nameId,
-                            nameIdPlaceholder: !nameIdPlaceholder
-                        }
-                    }) :
-                    this.setState(({nameId, nameIdPlaceholder}) => {
-                        return {
-                            nameId: nameId,
-                            nameIdPlaceholder: nameIdPlaceholder
-                        }
-                    });
-                console.log(name);
-                break;
-            case 'phone':
-                this.phoneValid = value.match(phoneFormat);
-                this.setState(({phoneId, phoneIdPlaceholder}) => {
-                    return {
-                        phoneId: !phoneId,
-                        phoneIdPlaceholder: !phoneIdPlaceholder
-                    }
-                });
-                break;
-            case 'email':
-                this.emailValid = value.match(mailFormat);
-                break;
-            default:
-                break;
-        }
-
-        this.setState({
-            formErrors: formErrors,
-            nameValid: nameValid,
-            phoneValid: phoneValid,
-            emailValid: emailValid
-        },
-            this.validateForm);
-    };
-
-    handleUserInput = e => {
-        const name = e.target.name;
-        const value = e.target.value;
-        this.setState({
-                [name]: value
-            },
-            () => { this.validateField(name, value) });
-    };
-
     onMirageText = () => {
         setTimeout(() => {
             this.setState(({showMirageText}) => {
@@ -203,7 +137,7 @@ export default class Form extends Component {
         }, 2000)
     };
 
-    onHideModalSubmit = () => {
+    onHideModalSubmitBtn = () => {
 
         if (this.validateForm) {
             setTimeout(() => {
@@ -218,7 +152,7 @@ export default class Form extends Component {
 
     };
 
-    onHideModalClose = () => {
+    onHideModalCloseBtn = () => {
         this.setState(({show}) => {
             return {
                 show: !show
@@ -226,23 +160,30 @@ export default class Form extends Component {
         })
     };
 
+    onHideBg = () => {
+        this.setState(({show}) => {
+            return {
+                show: !show
+            }
+        })
+    }
+
     render() {
 
         const {
+            show,
             email,
             phone,
+            nameId,
             company,
             comment,
+            phoneId,
             username,
             errorMsg,
             formValid,
             phoneValid,
             emailValid,
             usernameValid,
-
-            show,
-            nameId,
-            phoneId,
             showMirageText,
             nameIdPlaceholder,
             phoneIdPlaceholder
@@ -278,23 +219,19 @@ export default class Form extends Component {
                         onClick={this.onShowModal}
                     />
 
-                    <div id='form-main' className={formContainerClassNames}>
+                    <div id='form-main' className={formContainerClassNames} >
                         <div id='form-container' className='form-container'>
-                            <div id='close' className='close' onClick={this.onHideModalClose}/>
+                            <div id='close' className='close' onClick={this.onHideModalCloseBtn}/>
 
                             <form id='form' className='form' name='contactForm'>
 
-                                {/*<div className='panel panel-default'>*/}
-                                {/*    <FormErrors formErrors={formErrors} />*/}
-                                {/*</div>*/}
-
+                                <ValidateMessage valid={usernameValid}
+                                                 message={errorMsg.username}
+                                />
                                 <p className={nameValidateClass}>
                                     <label htmlFor='username'>
                                         <i className='fas fa-user fa-2x' />
                                     </label>
-                                    <ValidateMessage valid={usernameValid}
-                                                     message={errorMsg.username}
-                                    />
                                     <input
                                         type='text'
                                         name='name'
@@ -307,13 +244,14 @@ export default class Form extends Component {
                                     />
                                 </p>
 
+
+                                <ValidateMessage valid={phoneValid}
+                                                 message={errorMsg.phone}
+                                />
                                 <p className={phoneValidateClass}>
                                     <label htmlFor='phone'>
                                         <i className='fas fa-phone-alt fa-2x' />
                                     </label>
-                                    <ValidateMessage valid={phoneValid}
-                                                     message={errorMsg.phone}
-                                    />
                                     <input
                                         type='text'
                                         name='phone'
@@ -326,13 +264,13 @@ export default class Form extends Component {
                                     />
                                 </p>
 
+                                <ValidateMessage valid={emailValid}
+                                                 message={errorMsg.email}
+                                />
                                 <p className='email'>
                                     <label htmlFor='email'>
                                         <i className='fas fa-phone-alt fa-2x' />
                                     </label>
-                                    <ValidateMessage valid={emailValid}
-                                                     message={errorMsg.email}
-                                    />
                                     <input
                                         type='email'
                                         name='email'
@@ -372,16 +310,16 @@ export default class Form extends Component {
                                 />
                                 </p>
 
-                                <div className='submit'>
+                                <div className={formValid ? 'submit' : 'submit-disabled'}>
                                     <input
                                         type='submit'
                                         id='button-blue'
-                                        className='button-blue'
+                                        className={formValid ? 'button-blue' : 'button-disabled'}
                                         value='Получить цену'
-                                        onClick={this.onHideModalSubmit}
+                                        onClick={this.onHideModalSubmitBtn}
                                         disabled={ !formValid }
                                     />
-                                    <div className='ease'/>
+                                    {formValid && <div className='ease'/>}
                                 </div>
                             </form>
                         </div>
@@ -395,7 +333,6 @@ export default class Form extends Component {
                         </p>
                     </div>
                 </div>
-
             </Fragment>
         )
     }
