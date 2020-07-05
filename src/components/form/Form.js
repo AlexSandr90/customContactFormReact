@@ -1,11 +1,10 @@
-import React, {Fragment, Component} from "react";
+import React, {Component} from "react";
 
-import PopupText from "../popupText";
 import PopupBtn from "../popupBtn";
-import FormErrors from "../formErrors";
 
 import '../CSSVariables/variables.css';
 import './form.css';
+import '../popupText/popupText.css'
 import ValidateMessage from "../validateMessage";
 
 export default class Form extends Component {
@@ -24,7 +23,6 @@ export default class Form extends Component {
 
 
         show: false,
-        nameId: false,
         phoneId: false,
         showMirageText: false,
         nameIdPlaceholder: false,
@@ -103,7 +101,6 @@ export default class Form extends Component {
             errorMsg.phone = 'Please, enter phone in format +380xxxxxxxxx and length at 13 characters';
         }
 
-
         this.setState({phoneValid, errorMsg}, this.validateForm)
     };
 
@@ -125,29 +122,31 @@ export default class Form extends Component {
                 return {
                     showMirageText: true
                 }
-            })
-        }, 750);
+            });
+        }, 150);
 
         setTimeout(() => {
             this.setState(({showMirageText}) => {
                 return {
                     showMirageText: false
                 }
-            })
+            });
         }, 2000)
     };
 
     onHideModalSubmitBtn = () => {
 
         if (this.validateForm) {
+            this.onMirageText();
+            alert('showMirageText before:', this.showMirageText);
             setTimeout(() => {
-                this.onMirageText();
                 this.setState(({show}) => {
                     return {
-                        show: !show
+                        show: !show,
                     }
                 })
             }, 200);
+            alert('showMirageText after:', this.showMirageText);
         }
 
     };
@@ -166,7 +165,7 @@ export default class Form extends Component {
                 show: !show
             }
         })
-    }
+    };
 
     render() {
 
@@ -174,7 +173,6 @@ export default class Form extends Component {
             show,
             email,
             phone,
-            nameId,
             company,
             comment,
             phoneId,
@@ -192,23 +190,31 @@ export default class Form extends Component {
         let formContainerClassNames = 'form-main';
         let popupMirageText = 'popup-text-container';
         let nameValidateClass = 'name';
-        let nameValidateClassPlaceholder = 'validate[required,custom[onlyLetter],length[0,100]] feedback-input';
+        let nameValidateClassPlaceholder = 'feedback-input';
         let phoneValidateClass = 'phone';
-        let phoneValidateClassPlaceholder = 'validate[required,custom[phone]] feedback-input';
+        let phoneValidateClassPlaceholder = 'feedback-input';
 
-        show ? formContainerClassNames += ' show-modal' : formContainerClassNames = 'form-main';
-        showMirageText ? popupMirageText += ' popup-up' : popupMirageText = 'popup-text-container';
-        nameId ? nameValidateClass += ' border' : nameValidateClass = 'name';
-        nameId ?
-            (nameValidateClass += ' border') && (nameValidateClassPlaceholder += ' error-box-form') :
-            (nameValidateClass = 'name') && (nameValidateClassPlaceholder = 'validate[required,custom[onlyLetter],length[0,100]] feedback-input');
-        nameIdPlaceholder ? nameValidateClassPlaceholder += ' error-box-form' : nameValidateClassPlaceholder = 'validate[required,custom[onlyLetter],length[0,100]] feedback-input';
+        show ?
+            formContainerClassNames += ' show-modal' :
+            formContainerClassNames = 'form-main';
+
+        showMirageText ?
+            popupMirageText += ' popup-up' :
+            popupMirageText = 'popup-text-container';
+
+        nameIdPlaceholder ?
+            nameValidateClassPlaceholder += ' error-box-form' :
+            nameValidateClassPlaceholder = 'feedback-input';
+
         phoneId ? phoneValidateClass += ' border' : phoneValidateClass = 'phone';
-        phoneIdPlaceholder ? phoneValidateClassPlaceholder += ' error-box-form' : phoneValidateClassPlaceholder = 'validate[required,custom[phone]] feedback-input';
+
+        phoneIdPlaceholder ?
+            phoneValidateClassPlaceholder += ' error-box-form' :
+            phoneValidateClassPlaceholder = 'feedback-input';
 
 
         return (
-            <Fragment>
+            <>
                 <div className="container-wrap">
 
                     <input
@@ -225,10 +231,10 @@ export default class Form extends Component {
 
                             <form id='form' className='form' name='contactForm'>
 
-                                <ValidateMessage valid={usernameValid}
-                                                 message={errorMsg.username}
-                                />
                                 <p className={nameValidateClass}>
+                                    <ValidateMessage valid={usernameValid}
+                                                     message={errorMsg.username}
+                                    />
                                     <label htmlFor='username'>
                                         <i className='fas fa-user fa-2x' />
                                     </label>
@@ -244,11 +250,10 @@ export default class Form extends Component {
                                     />
                                 </p>
 
-
-                                <ValidateMessage valid={phoneValid}
-                                                 message={errorMsg.phone}
-                                />
                                 <p className={phoneValidateClass}>
+                                    <ValidateMessage valid={phoneValid}
+                                                     message={errorMsg.phone}
+                                    />
                                     <label htmlFor='phone'>
                                         <i className='fas fa-phone-alt fa-2x' />
                                     </label>
@@ -264,17 +269,17 @@ export default class Form extends Component {
                                     />
                                 </p>
 
-                                <ValidateMessage valid={emailValid}
-                                                 message={errorMsg.email}
-                                />
                                 <p className='email'>
+                                    <ValidateMessage valid={emailValid}
+                                                     message={errorMsg.email}
+                                    />
                                     <label htmlFor='email'>
                                         <i className='fas fa-phone-alt fa-2x' />
                                     </label>
                                     <input
                                         type='email'
                                         name='email'
-                                        className='validate[required,custom[email]] feedback-input'
+                                        className='feedback-input'
                                         placeholder='Электронная почта*'
                                         id='email'
                                         value={email}
@@ -290,7 +295,7 @@ export default class Form extends Component {
                                     <input
                                         type='text'
                                         name='company'
-                                        className='company validate[required,custom[email]] feedback-input'
+                                        className='feedback-input'
                                         placeholder='Ваша компания'
                                         id='company'
                                         value={company}
@@ -298,11 +303,10 @@ export default class Form extends Component {
                                     />
                                 </p>
 
-
                                 <p className='text'>
                                 <textarea
                                     name='text'
-                                    className='validate[required,length[6,300]] feedback-input'
+                                    className='feedback-input textarea'
                                     id='text'
                                     placeholder='Комментарий'
                                     value={comment}
@@ -316,24 +320,23 @@ export default class Form extends Component {
                                         id='button-blue'
                                         className={formValid ? 'button-blue' : 'button-disabled'}
                                         value='Получить цену'
-                                        onClick={this.onHideModalSubmitBtn}
+                                        onClick={this.onMirageText}
                                         disabled={ !formValid }
                                     />
-                                    {formValid && <div className='ease'/>}
                                 </div>
                             </form>
                         </div>
                     </div>
                 </div>
 
-                <div className={popupMirageText}>
-                    <div id="popup-text" className="popup-text">
+                <div className={popupMirageText} id="popup-text-container">
+                    <div id="popup-text" className='popup-text' >
                         <p>
                             Наши специалисты свяжутся с Вами в ближайшее время
                         </p>
                     </div>
                 </div>
-            </Fragment>
+            </>
         )
     }
 };

@@ -1,31 +1,43 @@
 :root {
+    /*Colors*/
+    /*Font-color*/
+    --color-focused: #30aed6;
+    --color-hover: #3498db;
+    --close-btn-color: #333333;
+    --product-btn-color: #1a390c;
+    --color_button_text: #1a390c;
+    --font-color-error: #8a0907;
+    --hover-submit-color: #ffffff;
+    /*BGC*/
     --main-bg-color-form: #3498db;
     --disabled-bg-color-form: rgba(31, 107, 126, 0.73);
-    --main-color: #ffffff;
     --disabled-btn-color: #3e3d3a;
-    --main-border-color: #fbfbfb;
     --popup-bg-color: rgba(0, 0, 0, 0.5);
     --popup-bg-color-secondary: rgba(0, 0, 0, 0);
     --form-div-bg-color: #5D84A5;
-    --font-color-form: #02c7ff;
-    --font-family-form: 'Montserrat', Helvetica, Arial, sans-serif;
     --input-bg-color: #fbfbfb;
-    --color-focused: #30aed6;
+    --html-bg-color: #F6F7F9;
+    --color_button_background: #0abe67;
+
+    /*OTHER COLORS*/
+    --main-color: #ffffff;
+    --main-border-color: #fbfbfb;
+    --font-color-form: #02c7ff;
     --secondary-color: #0493bd;
-    --ease-border: #3c3c3c;
-    --color-hover: #3498db;
     --color-label: #000000;
     --border-color-error: #ff1e0a;
-    --html-bg-color: #F6F7F9;
-    --close-btn-color: #333333;
-    --product-btn-color: #1a390c;
     --product-btn-bgc: #0abe67;
+    --ease-border: #3c3c3c;
+    /*Colors end*/
+
+    --font-family-form: 'Montserrat', Helvetica, Arial, sans-serif;
     --product-btn-border: 1px solid #0abe67;
 
 
+    --main-font-size: 16px;
+    --main-line-height: 17px;
+    --form-padding: 3px 3px 3px 5px;
 
     /*settings_data.json*/
 
-    --color_button_background: #0abe67;
-    --color_button_text: #1a390c;
 }

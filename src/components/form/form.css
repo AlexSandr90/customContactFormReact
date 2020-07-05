@@ -13,8 +13,10 @@
     padding: 35px 35px 50px 35px;
     width: calc(100% - 150px);
     max-width: 700px;
+    max-height: 550px;
     margin: 0 auto;
     border-radius: 10px;
+    overflow: hidden;
 
     position: absolute;
     top: 50%;
@@ -32,11 +34,11 @@
     color: var(--font-color-form);
     font-family: var(--font-family-form);
     font-weight: 400;
-    font-size: 18px;
-    line-height: 22px;
+    font-size: var(--main-font-size);
+    line-height: var(--main-line-height);
     background-color: var(--input-bg-color);
     border: none;
-    padding: 13px 13px 13px 15px;
+    padding: var(--form-padding);
     width: calc(100% - 20px);
     border-radius: 10px;
     -webkit-box-sizing: border-box;
@@ -51,6 +53,10 @@
     border: 0 solid var(--main-color);
     outline: none;
     color: #3498db;
+    padding: var(--form-padding);
+}
+
+textarea.feedback-input:focus {
     padding: 13px 13px 13px 15px;
 }
 
@@ -105,8 +111,8 @@ input:focus, textarea:focus {
 }
 
 .button-blue:hover, .button-blue:active {
-    background-color: var(--popup-bg-color-secondary);
-    color: var(--secondary-color);
+    background-color: var(--input-bg-color);
+    color: var(--color-hover);
 }
 
 .submit-disabled {
@@ -115,25 +121,7 @@ input:focus, textarea:focus {
 
 .submit:hover {
     color: var(--secondary-color);
-}
-
-.ease {
-    border-top: 3px solid var(--ease-border);
-    width: 0;
-    height: 76px;
-    background-color: var(--main-border-color);
-    -webkit-transition: .5s ease;
-    -moz-transition: .5s ease;
-    -o-transition: .5s ease;
-    transition: .5s ease;
-    border-radius: 10px;
-}
-
-.submit:hover .ease {
-    width: 100%;
-    background-color: var(--main-color);
-    border-radius: 10px;
-    color: var(--color-hover);
+    background-color: #fff;
 }
 
 label {
@@ -153,14 +141,16 @@ label i {
     display: flex;
     align-items: center;
     background-color: var(--main-color);
-    padding-left: 15px;
-    margin-top: 28px;
+    padding-left: 5px;
+    margin-top: 10px;
+    margin-bottom: 20px;
     border-radius: 10px;
     -webkit-border-radius: 10px;
     -moz-border-radius: 10px;
     cursor: text;
-    margin-bottom: 30px;
     box-sizing: border-box;
+    position: relative;
+
 }
 
 .name:hover,
@@ -169,12 +159,6 @@ label i {
 .company:hover {
     cursor: text;
     box-sizing: border-box;
-}
-
-.phone:hover,
-.email:hover,
-.company:hover {
-    margin-top: 28px;
 }
 
 .name i,
@@ -239,10 +223,10 @@ textarea.feedback-input {
 
 .close {
     position: absolute;
-    right: 32px;
-    top: 15px;
-    width: 32px;
-    height: 32px;
+    right: 44px;
+    top: 7px;
+    width: 16px;
+    height: 16px;
     opacity: 0.3;
     cursor: pointer;
 }
@@ -264,7 +248,11 @@ textarea.feedback-input {
     transform: rotate(-45deg);
 }
 
-@media only screen and (max-width: 580px) {
+.textarea {
+    padding: 15px 15px 15px 25px;
+}
+
+@media only screen and (max-width: var(--breakpoint-sm)) {
     .form-div {
         position: absolute;
         margin-right: 3%;
