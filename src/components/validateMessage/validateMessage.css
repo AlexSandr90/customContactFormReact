@@ -1,0 +1,8 @@
+.error-msg {
+    color: var(--font-color-error);
+    font-size: var(--main-font-size);
+    line-height: var(--main-line-height);
+    /*font-weight: bold;*/
+    position: absolute;
+    top: -20px;
+}

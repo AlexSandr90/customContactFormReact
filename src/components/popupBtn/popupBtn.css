@@ -1,0 +1,22 @@
+.popup-toggle {
+    width: 100%;
+    height: 60px;
+    outline: none;
+    border-radius: 10px;
+    font-family: var(--font-family-form);
+    font-weight: 600;
+    font-size: 22px;
+    letter-spacing: 2px;
+    transition: ease-in-out .2s;
+    cursor: pointer;
+    margin: 0 auto;
+    color: var(--main-color);
+    border: 4px solid var(--main-border-color);
+    background-color: var(--main-bg-color-form);
+}
+
+.popup-toggle:hover {
+    background-color: var(--main-color);
+    color: var(--main-bg-color-form);
+    border: 2px solid var(--main-border-color);
+}
